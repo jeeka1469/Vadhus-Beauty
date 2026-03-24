@@ -1,0 +1,160 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Vadhus Beauty - Light Blue Theme (no pink) */
+  --background: #f8fbff;
+  --foreground: #1e2a3b;
+  --card: #ffffff;
+  --card-foreground: #1e2a3b;
+  --popover: #ffffff;
+  --popover-foreground: #1e2a3b;
+  --primary: #5aa9ff;
+  --primary-foreground: #ffffff;
+  --secondary: #eaf4ff;
+  --secondary-foreground: #23364d;
+  --muted: #f3f8ff;
+  --muted-foreground: #5e738e;
+  --accent: #dcedff;
+  --accent-foreground: #1e2a3b;
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: #d7e8fb;
+  --input: #deecfb;
+  --ring: #5aa9ff;
+  --chart-1: #5aa9ff;
+  --chart-2: #3f87d6;
+  --chart-3: #79b5ff;
+  --chart-4: #2c6ab5;
+  --chart-5: #a3ccff;
+  --radius: 0.75rem;
+  --sidebar: #f4f9ff;
+  --sidebar-foreground: #1e2a3b;
+  --sidebar-primary: #5aa9ff;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e7f2ff;
+  --sidebar-accent-foreground: #1e2a3b;
+  --sidebar-border: #d7e8fb;
+  --sidebar-ring: #5aa9ff;
+}
+
+.dark {
+  --background: #0e1624;
+  --foreground: #eaf3ff;
+  --card: #142034;
+  --card-foreground: #eaf3ff;
+  --popover: #142034;
+  --popover-foreground: #eaf3ff;
+  --primary: #66b2ff;
+  --primary-foreground: #0e1624;
+  --secondary: #1b2b42;
+  --secondary-foreground: #eaf3ff;
+  --muted: #1a2940;
+  --muted-foreground: #a9c0de;
+  --accent: #203552;
+  --accent-foreground: #eaf3ff;
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: #28405f;
+  --input: #223754;
+  --ring: #66b2ff;
+  --chart-1: #66b2ff;
+  --chart-2: #4a8fd9;
+  --chart-3: #8bc3ff;
+  --chart-4: #3a79bf;
+  --chart-5: #b3d8ff;
+  --sidebar: #121f31;
+  --sidebar-foreground: #eaf3ff;
+  --sidebar-primary: #66b2ff;
+  --sidebar-primary-foreground: #0e1624;
+  --sidebar-accent: #1d3150;
+  --sidebar-accent-foreground: #eaf3ff;
+  --sidebar-border: #28405f;
+  --sidebar-ring: #66b2ff;
+}
+
+@theme inline {
+  --font-sans: 'Cormorant Garamond', 'Cormorant Garamond Fallback', serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-body: 'Montserrat', 'Montserrat Fallback', sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+  }
+}
+
+@keyframes review-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.review-marquee-mask {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.review-marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: review-marquee 45s linear infinite;
+}
+
+.review-marquee-track-reverse {
+  animation-direction: reverse;
+}
+
+.review-marquee-track:hover {
+  animation-play-state: paused;
+}
