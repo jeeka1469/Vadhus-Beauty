@@ -2,12 +2,13 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { FALLBACK_REVIEWS, getApprovedReviews } from '@/lib/reviews'
 import { Quote, Heart, Sparkles, Star } from 'lucide-react'
+import Image from 'next/image'
 
 const teamMembers = [
-  { name: 'Vidhya Mileen Sonawane', role: 'Founder & Beauty Director', initials: 'VMS' },
+  { name: 'Vidya Mileen Sonawane', role: 'Founder & Beauty Director', initials: 'VMS', image: '/team/founder.jpeg' },
   { name: 'Shruti More', role: 'Makeup Artist', initials: 'SM' },
   { name: 'Anchal Tiwari', role: 'Makeup Artist', initials: 'AT' },
-  { name: 'Sulakshana', role: 'Makeup Artist', initials: 'SH' },
+  { name: 'Sulakshana', role: 'Saree Draper', initials: 'SH' },
 ]
 
 export default async function CommunityPage() {
@@ -40,11 +41,18 @@ export default async function CommunityPage() {
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
             <div className="lg:col-span-2">
               <div className="relative rounded-3xl border border-border bg-gradient-to-br from-primary/15 to-accent/50 p-8 h-[360px] flex flex-col justify-between">
-                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center text-primary font-sans text-3xl font-semibold">
-                  VMS
+                <div className="relative h-20 w-20 overflow-hidden rounded-full border border-primary/30 bg-primary/20">
+                  <Image
+                    src="/team/founder.jpeg"
+                    alt="Vidya Mileen Sonawane"
+                    fill
+                    sizes="80px"
+                    className="object-cover"
+                    priority
+                  />
                 </div>
                 <div>
-                  <p className="font-sans text-2xl font-semibold text-foreground">Vidhya Mileen Sonawane</p>
+                  <p className="font-sans text-2xl font-semibold text-foreground">Vidya Mileen Sonawane</p>
                   <p className="text-muted-foreground">Founder, Vadhus Beauty</p>
                 </div>
               </div>
@@ -93,9 +101,21 @@ export default async function CommunityPage() {
                 key={member.name}
                 className="rounded-2xl border border-border bg-card p-6 text-center hover:border-primary/40 hover:shadow-lg transition-all"
               >
-                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
-                  <span className="font-sans text-2xl font-semibold text-primary">{member.initials}</span>
-                </div>
+                {member.image ? (
+                  <div className="relative mx-auto mb-4 h-20 w-20 overflow-hidden rounded-full border border-primary/30">
+                    <Image
+                      src={member.image}
+                      alt={member.name}
+                      fill
+                      sizes="80px"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
+                    <span className="font-sans text-2xl font-semibold text-primary">{member.initials}</span>
+                  </div>
+                )}
                 <h3 className="font-sans text-xl font-semibold text-foreground">{member.name}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{member.role}</p>
               </article>

@@ -41,7 +41,7 @@ export default function AboutPage() {
                   one of the most trusted names in premium beauty services.
                 </p>
                 <p>
-                  Our founder, Vidhya Mileen Sonawane, believed that true beauty comes from within and 
+                  Our founder, Vidya Mileen Sonawane, believed that true beauty comes from within and 
                   that our role is to help it shine through. This philosophy has guided 
                   every aspect of our service, from the products we use to the techniques 
                   we employ.
