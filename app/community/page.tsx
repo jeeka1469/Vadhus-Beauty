@@ -1,8 +1,10 @@
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { FALLBACK_REVIEWS, getApprovedReviews } from '@/lib/reviews'
+import { createClient } from '@/lib/supabase/server'
 import { Quote, Heart, Sparkles, Star } from 'lucide-react'
 import Image from 'next/image'
+import { ReviewSubmissionForm } from '@/components/reviews/review-submission-form'
 
 const teamMembers = [
   { name: 'Vidya Mileen Sonawane', role: 'Founder & Beauty Director', initials: 'VMS', image: '/team/founder.jpeg' },
@@ -12,7 +14,14 @@ const teamMembers = [
 ]
 
 export default async function CommunityPage() {
+  const supabase = await createClient()
   const reviews = await getApprovedReviews(12)
+  const { data: services } = await supabase
+    .from('services')
+    .select('id, name')
+    .eq('is_active', true)
+    .order('name')
+
   const list = reviews.length > 0 ? reviews : FALLBACK_REVIEWS
   const rowOne = list.slice(0, Math.ceil(list.length / 2))
   const rowTwo = list.slice(Math.ceil(list.length / 2))
@@ -183,6 +192,12 @@ export default async function CommunityPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="py-20 bg-background">
+        <div className="max-w-3xl mx-auto px-4">
+          <ReviewSubmissionForm services={services || []} />
         </div>
       </section>
 
