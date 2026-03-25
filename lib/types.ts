@@ -26,6 +26,7 @@ export interface Booking {
   created_at: string
   updated_at: string
   service?: Service
+  booking_services?: { service: Service }[]
 }
 
 export interface Invoice {

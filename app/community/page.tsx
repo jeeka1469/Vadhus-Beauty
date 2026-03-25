@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { ReviewSubmissionForm } from '@/components/reviews/review-submission-form'
 
 const teamMembers = [
-  { name: 'Vidya Mileen Sonawane', role: 'Founder & Beauty Director', initials: 'VMS', image: '/team/founder.jpeg' },
+  { name: 'Vidya Mileen Sonawane', role: 'Founder & Beauty Director', initials: 'VMS' },
   { name: 'Shruti More', role: 'Makeup Artist', initials: 'SM' },
   { name: 'Anchal Tiwari', role: 'Makeup Artist', initials: 'AT' },
   { name: 'Sulakshana', role: 'Saree Draper', initials: 'SH' },
@@ -110,21 +110,9 @@ export default async function CommunityPage() {
                 key={member.name}
                 className="rounded-2xl border border-border bg-card p-6 text-center hover:border-primary/40 hover:shadow-lg transition-all"
               >
-                {member.image ? (
-                  <div className="relative mx-auto mb-4 h-20 w-20 overflow-hidden rounded-full border border-primary/30">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
-                    <span className="font-sans text-2xl font-semibold text-primary">{member.initials}</span>
-                  </div>
-                )}
+                <div className="mx-auto mb-4 h-20 w-20 rounded-full bg-gradient-to-br from-primary/25 to-accent/60 flex items-center justify-center">
+                  <span className="font-sans text-2xl font-semibold text-primary">{member.initials}</span>
+                </div>
                 <h3 className="font-sans text-xl font-semibold text-foreground">{member.name}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{member.role}</p>
               </article>

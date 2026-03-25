@@ -12,6 +12,7 @@ export async function POST(request: Request) {
     const body = await request.json()
     const {
       service_id,
+      service_ids,
       booking_date,
       booking_time,
       client_name,
@@ -23,7 +24,13 @@ export async function POST(request: Request) {
     } = body
 
     // Validate required fields
-    if (!service_id || !booking_date || !booking_time || !client_name || !client_phone) {
+    const parsedServiceIds = Array.isArray(service_ids)
+      ? service_ids.filter((value): value is string => typeof value === 'string' && value.length > 0)
+      : typeof service_id === 'string' && service_id.length > 0
+        ? [service_id]
+        : []
+
+    if (parsedServiceIds.length === 0 || !booking_date || !booking_time || !client_name || !client_phone) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -58,11 +65,13 @@ export async function POST(request: Request) {
 
     const supabase = await createClient()
 
+    const primaryServiceId = parsedServiceIds[0]
+
     // Create booking
     const { data, error } = await supabase
       .from('bookings')
       .insert({
-        service_id,
+        service_id: primaryServiceId,
         booking_date,
         booking_time,
         client_name,
@@ -79,6 +88,24 @@ export async function POST(request: Request) {
       console.error('Supabase error:', error)
       return NextResponse.json(
         { error: 'Failed to create booking' },
+        { status: 500 }
+      )
+    }
+
+    const bookingServicesPayload = parsedServiceIds.map((selectedServiceId) => ({
+      booking_id: data.id,
+      service_id: selectedServiceId,
+    }))
+
+    const { error: bookingServicesError } = await supabase
+      .from('booking_services')
+      .upsert(bookingServicesPayload, { onConflict: 'booking_id,service_id' })
+
+    if (bookingServicesError) {
+      console.error('Booking services error:', bookingServicesError)
+      await supabase.from('bookings').delete().eq('id', data.id)
+      return NextResponse.json(
+        { error: 'Failed to link booking services' },
         { status: 500 }
       )
     }
@@ -106,7 +133,10 @@ export async function GET() {
       .from('bookings')
       .select(`
         *,
-        service:services(*)
+        service:services(*),
+        booking_services(
+          service:services(*)
+        )
       `)
       .order('booking_date', { ascending: true })
       .order('booking_time', { ascending: true })

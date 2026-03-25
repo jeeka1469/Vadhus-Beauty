@@ -70,7 +70,10 @@ export async function GET(
       .from('bookings')
       .select(`
         *,
-        service:services(*)
+        service:services(*),
+        booking_services(
+          service:services(*)
+        )
       `)
       .eq('id', id)
       .single()

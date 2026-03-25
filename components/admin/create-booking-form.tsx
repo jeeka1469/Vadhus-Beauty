@@ -20,7 +20,7 @@ export function CreateBookingForm({ services }: CreateBookingFormProps) {
   const today = useMemo(() => new Date().toISOString().split('T')[0], [])
 
   const [formData, setFormData] = useState({
-    serviceId: services[0]?.id || '',
+    serviceIds: services[0]?.id ? [services[0].id] : [],
     bookingDate: today,
     bookingTime: '10:00',
     clientName: '',
@@ -35,6 +35,15 @@ export function CreateBookingForm({ services }: CreateBookingFormProps) {
     setFormData((prev) => ({ ...prev, [key]: value }))
   }
 
+  const toggleService = (serviceId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      serviceIds: prev.serviceIds.includes(serviceId)
+        ? prev.serviceIds.filter((id) => id !== serviceId)
+        : [...prev.serviceIds, serviceId],
+    }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
@@ -45,7 +54,7 @@ export function CreateBookingForm({ services }: CreateBookingFormProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          service_id: formData.serviceId,
+          service_ids: formData.serviceIds,
           booking_date: formData.bookingDate,
           booking_time: formData.bookingTime,
           client_name: formData.clientName,
@@ -76,20 +85,26 @@ export function CreateBookingForm({ services }: CreateBookingFormProps) {
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <Label htmlFor="service">Service *</Label>
-          <select
-            id="service"
-            required
-            value={formData.serviceId}
-            onChange={(e) => updateField('serviceId', e.target.value)}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-          >
+          <Label>Services *</Label>
+          <div className="max-h-56 space-y-2 overflow-y-auto rounded-md border border-input p-3">
             {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.name} - INR {Number(service.price).toLocaleString('en-IN')}
-              </option>
+              <label key={service.id} className="flex cursor-pointer items-center justify-between gap-3 rounded-md px-2 py-2 hover:bg-muted/50">
+                <div>
+                  <p className="text-sm font-medium text-foreground">{service.name}</p>
+                  <p className="text-xs text-muted-foreground">INR {Number(service.price).toLocaleString('en-IN')}</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={formData.serviceIds.includes(service.id)}
+                  onChange={() => toggleService(service.id)}
+                  className="h-4 w-4"
+                />
+              </label>
             ))}
-          </select>
+          </div>
+          {formData.serviceIds.length === 0 && (
+            <p className="text-xs text-destructive">Select at least one service.</p>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -201,7 +216,7 @@ export function CreateBookingForm({ services }: CreateBookingFormProps) {
       )}
 
       <div className="flex items-center gap-3">
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || formData.serviceIds.length === 0}>
           {isSubmitting ? 'Saving...' : 'Create Booking'}
         </Button>
         <Button

@@ -36,10 +36,12 @@ export function BookingsTable({ initialBookings }: BookingsTableProps) {
   const [isUpdating, setIsUpdating] = useState<string | null>(null)
 
   const filteredBookings = bookings.filter((booking) => {
+    const multiServiceNames = booking.booking_services?.map((item) => item.service?.name).filter(Boolean).join(' ') || ''
     const matchesSearch = 
       booking.client_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       booking.client_phone.includes(searchQuery) ||
-      booking.service?.name.toLowerCase().includes(searchQuery.toLowerCase())
+      booking.service?.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      multiServiceNames.toLowerCase().includes(searchQuery.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || booking.status === statusFilter
     
@@ -150,6 +152,11 @@ export function BookingsTable({ initialBookings }: BookingsTableProps) {
                     </td>
                     <td className="py-4 px-4">
                       <p className="font-medium">{booking.service?.name}</p>
+                      {booking.booking_services && booking.booking_services.length > 1 && (
+                        <p className="text-xs text-muted-foreground">
+                          +{booking.booking_services.length - 1} more service(s)
+                        </p>
+                      )}
                       <p className="text-sm text-muted-foreground">₹{booking.service?.price}</p>
                     </td>
                     <td className="py-4 px-4">

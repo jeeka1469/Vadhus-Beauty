@@ -11,7 +11,10 @@ async function getBookings() {
     .from('bookings')
     .select(`
       *,
-      service:services(id, name, price, duration)
+      service:services(id, name, price, duration),
+      booking_services(
+        service:services(id, name, price, duration)
+      )
     `)
     .order('booking_date', { ascending: false })
     .order('booking_time', { ascending: false })

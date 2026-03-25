@@ -73,6 +73,29 @@ CREATE POLICY "Anyone can create bookings" ON public.bookings FOR INSERT WITH CH
 DROP POLICY IF EXISTS "Anyone can update bookings" ON public.bookings;
 CREATE POLICY "Anyone can update bookings" ON public.bookings FOR UPDATE USING (true);
 
+-- Booking services table (supports selecting multiple services per booking)
+CREATE TABLE IF NOT EXISTS public.booking_services (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  booking_id UUID NOT NULL REFERENCES public.bookings(id) ON DELETE CASCADE,
+  service_id UUID NOT NULL REFERENCES public.services(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE (booking_id, service_id)
+);
+
+ALTER TABLE public.booking_services ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Anyone can view booking services" ON public.booking_services;
+CREATE POLICY "Anyone can view booking services" ON public.booking_services FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Anyone can create booking services" ON public.booking_services;
+CREATE POLICY "Anyone can create booking services" ON public.booking_services FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Anyone can update booking services" ON public.booking_services;
+CREATE POLICY "Anyone can update booking services" ON public.booking_services FOR UPDATE USING (true);
+
+DROP POLICY IF EXISTS "Anyone can delete booking services" ON public.booking_services;
+CREATE POLICY "Anyone can delete booking services" ON public.booking_services FOR DELETE USING (true);
+
 -- Invoices table
 CREATE TABLE IF NOT EXISTS public.invoices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

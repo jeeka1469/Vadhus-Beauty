@@ -23,7 +23,7 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
   const [error, setError] = useState<string | null>(null)
   
   const [formData, setFormData] = useState({
-    serviceId: preSelectedServiceId || '',
+    serviceIds: preSelectedServiceId ? [preSelectedServiceId] : [],
     date: '',
     time: '',
     name: '',
@@ -32,7 +32,17 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
     notes: '',
   })
 
-  const selectedService = services.find(s => s.id === formData.serviceId)
+  const selectedServices = services.filter((service) => formData.serviceIds.includes(service.id))
+  const totalAmount = selectedServices.reduce((sum, service) => sum + Number(service.price), 0)
+
+  const toggleService = (serviceId: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      serviceIds: prev.serviceIds.includes(serviceId)
+        ? prev.serviceIds.filter((id) => id !== serviceId)
+        : [...prev.serviceIds, serviceId],
+    }))
+  }
 
   // Generate available dates (next 30 days, excluding Sundays)
   const availableDates = Array.from({ length: 30 }, (_, i) => {
@@ -51,7 +61,7 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          service_id: formData.serviceId,
+          service_ids: formData.serviceIds,
           booking_date: formData.date,
           booking_time: formData.time,
           client_name: formData.name,
@@ -89,7 +99,10 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
         <div className="bg-card rounded-xl p-6 border border-border text-left mb-8">
           <h3 className="font-medium text-foreground mb-4">Booking Details</h3>
           <div className="space-y-2 text-sm">
-            <p><span className="text-muted-foreground">Service:</span> {selectedService?.name}</p>
+            <p>
+              <span className="text-muted-foreground">Services:</span>{' '}
+              {selectedServices.map((service) => service.name).join(', ')}
+            </p>
             <p><span className="text-muted-foreground">Date:</span> {new Date(formData.date).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
             <p><span className="text-muted-foreground">Time:</span> {formData.time}</p>
             <p><span className="text-muted-foreground">Name:</span> {formData.name}</p>
@@ -132,17 +145,22 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
         {/* Step 1: Select Service */}
         {step === 1 && (
           <div className="animate-in fade-in">
-            <h2 className="font-sans text-2xl font-semibold text-foreground mb-6 text-center">
-              Select a Service
-            </h2>
+            <div className="text-center mb-8">
+              <h2 className="font-sans text-2xl font-semibold text-foreground mb-2">
+                Select Services
+              </h2>
+              <p className="text-muted-foreground">
+                Choose one or more services {formData.serviceIds.length > 0 && <span className="font-semibold">({formData.serviceIds.length} selected)</span>}
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {services.map((service) => (
                 <button
                   type="button"
                   key={service.id}
-                  onClick={() => setFormData({ ...formData, serviceId: service.id })}
+                  onClick={() => toggleService(service.id)}
                   className={`p-5 rounded-xl border text-left transition-all ${
-                    formData.serviceId === service.id
+                    formData.serviceIds.includes(service.id)
                       ? 'border-primary bg-primary/5 shadow-md'
                       : 'border-border bg-card hover:border-primary/50'
                   }`}
@@ -170,7 +188,7 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
               <Button
                 type="button"
                 onClick={() => setStep(2)}
-                disabled={!formData.serviceId}
+                disabled={formData.serviceIds.length === 0}
               >
                 Continue
               </Button>
@@ -269,12 +287,12 @@ export function BookingForm({ services, preSelectedServiceId }: BookingFormProps
               <h3 className="font-medium text-foreground mb-4">Booking Summary</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-muted-foreground">Service:</span>
-                  <p className="font-medium">{selectedService?.name}</p>
+                  <span className="text-muted-foreground">Services:</span>
+                  <p className="font-medium">{selectedServices.map((service) => service.name).join(', ')}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Price:</span>
-                  <p className="font-medium">₹{selectedService?.price.toLocaleString()}</p>
+                  <p className="font-medium">₹{totalAmount.toLocaleString('en-IN')}</p>
                 </div>
                 <div>
                   <span className="text-muted-foreground">Date:</span>
