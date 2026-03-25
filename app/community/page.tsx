@@ -40,20 +40,19 @@ export default async function CommunityPage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
             <div className="lg:col-span-2">
-              <div className="relative rounded-3xl border border-border bg-gradient-to-br from-primary/15 to-accent/50 p-8 h-[360px] flex flex-col justify-between">
-                <div className="relative h-20 w-20 overflow-hidden rounded-full border border-primary/30 bg-primary/20">
-                  <Image
-                    src="/team/founder.jpeg"
-                    alt="Vidya Mileen Sonawane"
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-                <div>
-                  <p className="font-sans text-2xl font-semibold text-foreground">Vidya Mileen Sonawane</p>
-                  <p className="text-muted-foreground">Founder, Vadhus Beauty</p>
+              <div className="relative h-[360px] overflow-hidden rounded-3xl border border-border">
+                <Image
+                  src="/team/founder.jpeg"
+                  alt="Vidya Mileen Sonawane"
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <p className="font-sans text-2xl font-semibold text-white">Vidya Mileen Sonawane</p>
+                  <p className="text-white/85">Founder, Vadhus Beauty</p>
                 </div>
               </div>
             </div>
@@ -79,6 +78,7 @@ export default async function CommunityPage() {
                 </p>
               </div>
             </div>
+
           </div>
         </div>
       </section>
